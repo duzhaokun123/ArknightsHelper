@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#81D4FA"
+        android:orientation="horizontal"
+        tools:ignore="HardcodedText">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/mini"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="mini" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="login" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/sc_noChild"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="no Child" />
+
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/sc_noHead"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="no Head" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/sc_debug"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="debug" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/set_delegate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="set delegate" />
+
+                <Button
+                    android:id="@+id/startOperation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="start operation" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/go_home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="go home" />
+
+            <Button
+                android:id="@+id/onPrepare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="on Prepare" />
+
+            <Button
+                android:id="@+id/onTroop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="on Troop" />
+
+            <Button
+                android:id="@+id/onLevelIpPopup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="on Level Up Popup" />
+
+            <Button
+                android:id="@+id/onEndOperation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="on End Operation" />
+
+            <Button
+                android:id="@+id/wait_for_still_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="wait for still image" />
+
+            <Button
+                android:id="@+id/quitGame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="quit game" />
+
+            <Button
+                android:id="@+id/stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="stop" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_callback"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            android:textColor="@color/white"
+            android:textIsSelectable="true" />
+    </LinearLayout>
+</layout>

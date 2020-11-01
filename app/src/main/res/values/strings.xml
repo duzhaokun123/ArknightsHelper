@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Arknights Helper</string>
+    <string name="showing_overlay">showing overlay</string>
+    <string name="permission_request">permission request</string>
+    <string name="msg_overlay_request">overlay request</string>
+</resources>

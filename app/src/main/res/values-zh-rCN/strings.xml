@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ArknightsHelper</string>
+    <string name="showing_overlay">显示叠加层中</string>
+    <string name="permission_request">权限请求</string>
+    <string name="msg_overlay_request">需要叠加层权限</string>
+</resources>

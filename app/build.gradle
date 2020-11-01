@@ -1,0 +1,88 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'org.jetbrains.kotlin.kapt'
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        applicationId "com.duzhaokun123.arknightshelper"
+        minSdkVersion 26
+        targetSdkVersion 30
+        versionCode 1
+        versionName "0.1.0-alpha01"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            zipAlignEnabled true
+            ndk {
+                abiFilters "arm64-v8a"
+            }
+        }
+        debug {
+            zipAlignEnabled false
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        dataBinding = true
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.3.2'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    testImplementation 'junit:junit:4.13.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    //opencv
+    implementation project(':opencv')
+
+    //overlaywindow
+    implementation project(':overlayindow')
+
+    //preferencex
+    implementation 'androidx.preference:preference-ktx:1.1.1'
+    implementation 'com.takisoft.preferencex:preferencex:1.1.0'
+    implementation 'com.takisoft.preferencex:preferencex-simplemenu:1.1.0'
+
+//    //core
+//    implementation 'androidx.core:core-ktx:1.5.0-alpha04'
+
+    //libsu
+    implementation 'com.github.topjohnwu.libsu:core:3.0.2'
+
+//    //gson
+//    implementation 'com.google.code.gson:gson:2.8.6'
+
+//    //Markwon
+//    final def  markwon_version =  '4.6.0'
+//    implementation  "io.noties.markwon:core:$markwon_version"
+//    implementation  "io.noties.markwon:image:$markwon_version"
+
+    //tess-two
+    implementation 'com.rmtheis:tess-two:9.0.0'
+
+//    //JavaCPP Presets for Tesseract
+//    implementation 'org.bytedeco:tesseract-platform:4.1.1-1.5.4'
+}

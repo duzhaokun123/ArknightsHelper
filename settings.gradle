@@ -1,0 +1,5 @@
+include ':overlayindow'
+include ':opencv'
+include ':app'
+project(':opencv').projectDir = new File(rootDir, 'third_party/OpenCV-android-sdk/sdk/')
+rootProject.name = "ArknightsHelper"
