@@ -17,9 +17,9 @@ class TestOverlayWindow(context: Context) : BaseOverlayWindow<OverlayTestBinding
     private val arknightsHelper by lazy {
         ArknightsHelper(
             SuUIInteractor(),
-            CallbackLogger { tag, msg, level ->
+            CallbackLogger { tag, func, msg, level ->
                 Application.runOnUiThread {
-                    baseBind.tvCallback.append("${Util.getLogLevelString(level)}/$tag: $msg\n")
+                    baseBind.tvCallback.append("${Util.getLogLevelString(level)}/$tag: $func: $msg\n")
                 }
             }, ArknightsHelperConfig(), this.toAction(), "TestOverlayWindow"
         )

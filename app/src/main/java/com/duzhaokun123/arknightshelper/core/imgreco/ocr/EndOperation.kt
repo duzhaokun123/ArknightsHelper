@@ -3,18 +3,19 @@ package com.duzhaokun123.arknightshelper.core.imgreco.ocr
 import android.util.Log
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.TesseractOCR.fixStageName
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util.crop
+import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util.sum
 import com.duzhaokun123.arknightshelper.core.logger.Logger
 import com.duzhaokun123.arknightshelper.core.model.EndOperationRecognizeInfo
-import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Rect
 
 object EndOperation {
-    const val TAG = "EndOperation"
+    private const val TAG = "EndOperation"
 
     fun recognize(img: Mat, logger: Logger? = null): EndOperationRecognizeInfo? {
-        logger?.logH2(TAG, "recognize")
+        val func = "recognize"
+        logger?.logH2(TAG, func)
 
         val t0 = System.currentTimeMillis()
         val vw: Double
@@ -30,7 +31,7 @@ object EndOperation {
                 Point(100 * vw, 100 * vh)
             )
         )
-        logger?.logImg(TAG, lower, "recognize", "lower")
+        logger?.logImg(TAG, lower, func, "lower")
 
         val operationId = lower.crop(
             Rect(
@@ -38,9 +39,9 @@ object EndOperation {
                 Point(23.611 * vh, 11.388 * vh)
             )
         )
-        logger?.logImg(TAG, operationId, "recognize", "operationId")
+        logger?.logImg(TAG, operationId, func, "operationId")
         val operationIdStr = (TesseractOCR.process(operationId) ?: return null).fixStageName(logger)
-        logger?.logText(TAG, "recognize: operationIdStr: $operationIdStr")
+        logger?.logText(TAG, func, "operationIdStr: $operationIdStr")
 
         val stars = lower.crop(
             Rect(
@@ -48,9 +49,9 @@ object EndOperation {
                 Point(53.241 * vh, 16.944 * vh)
             )
         )
-        logger?.logImg(TAG, stars, "recognize", "stars")
+        logger?.logImg(TAG, stars, func, "stars")
         val starsStatus = tellStars(stars, logger)
-        logger?.logText(TAG, "recognize: starsStatus = $starsStatus")
+        logger?.logText(TAG, func, "starsStatus = $starsStatus")
 
         val recoresult = EndOperationRecognizeInfo(operationIdStr, starsStatus, HashSet(), false)
 
@@ -60,7 +61,7 @@ object EndOperation {
                 Point(lower.width().toDouble(), 35.000 * vh)
             )
         )
-        logger?.logImg(TAG, items, "recognize", "items")
+        logger?.logImg(TAG, items, func, "items")
 
         // TODO: 20-11-1 掉落识别
 //        var x = 6.667 * vh
@@ -72,11 +73,55 @@ object EndOperation {
         return recoresult
     }
 
+    fun checkLevelUpPopup(img: Mat): Boolean {
+        val vw: Double
+        val vh: Double
+        Util.getVwvh(img.size()).let {
+            vw = it.first
+            vh = it.second
+        }
+        val lui = img.crop(
+            Rect(
+                Point(50 * vw - 48.796 * vh, 47.685 * vh),
+                Point(50 * vw - 23.148 * vh, 56.019 * vh)
+            )
+        )
+        val lut = TesseractOCR.process(lui) ?: return false
+        return "提升" in lut
+    }
+
+    fun checkEndOperation(img: Mat): Boolean {
+        val vw: Double
+        val vh: Double
+        Util.getVwvh(img.size()).let {
+            vw = it.first
+            vh = it.second
+        }
+        val template = Resources.loadImage("end_operation/friendship.png")!!
+        val operationEndImg = img.crop(117.083 * vh, 64.306 * vh, 121.528 * vh, 69.583 * vh)
+        val mse = Imgops.compareMse(Imgops.uniformSize(template, operationEndImg))
+        return mse.sum() < 86 && mse.sum() > 46
+    }
+
+    fun checkEndOperationAlt(img: Mat): Boolean {
+        val vw: Double
+        val vh: Double
+        Util.getVwvh(img.size()).let {
+            vw = it.first
+            vh = it.second
+        }
+        val template = Resources.loadImage("end_operation/end.png")!!
+        val operationEndImg = img.crop(4.722 * vh, 80.278 * vh, 56.389 * vh, 93.889 * vh)
+        val mse = Imgops.compareMse(Imgops.uniformSize(template, operationEndImg))
+        return mse.sum() < 26 && mse.sum() > 10
+    }
+
     /**
      * @return 不是 3 就是 2 , 反正我没见过 1
      */
     private fun tellStars(stars: Mat, logger: Logger? = null): Int {
-        logger?.logH3(TAG, "tellStars", Log.DEBUG)
+        val func = "tellStars"
+        logger?.logH3(TAG, func, level = Log.DEBUG)
         val img1: Mat
         var img2 = Resources.loadImage("end_operation/stars3.png")!!
         Imgops.uniformSize(stars, img2).let {
@@ -84,11 +129,9 @@ object EndOperation {
             img2 = it.second
         }
         val ccoeff = Imgops.compareCcoeff(img1, img2)
-        logger?.logImg(TAG, img1, "tellStars", "img1", Log.DEBUG)
-        logger?.debug(TAG, "tellStars: cceff = $ccoeff")
-        logger?.logDivider(TAG, Log.DEBUG)
+        logger?.logImg(TAG, img1, func, "img1", Log.DEBUG)
+        logger?.debug(TAG, func, "cceff = $ccoeff")
+        logger?.logDivider(TAG, func, Log.DEBUG)
         return if (ccoeff > 0.9) 3 else 2
     }
-
-
 }

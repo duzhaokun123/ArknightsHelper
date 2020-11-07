@@ -23,9 +23,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private val logger by lazy {
-        MultiLogger(CallbackLogger { tag: String, msg: String, level: Int ->
+        MultiLogger(CallbackLogger { tag, func, msg, level ->
             runOnUiThread {
-                baseBind.tvCallback.append("${Util.getLogLevelString(level)}/$tag: $msg\n")
+                baseBind.tvCallback.append("${Util.getLogLevelString(level)}/$tag: $func: $msg\n")
             }
         }, MDLogger("Test"), AndroidLogger())
     }
@@ -51,6 +51,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         }
         baseBind.cleanCache.setOnClickListener {
             externalCacheDir?.deleteRecursively()
+        }
+        baseBind.gc.setOnClickListener {
+            System.gc()
+        }
+        baseBind.runFinalization.setOnClickListener {
+            System.runFinalization()
         }
     }
 

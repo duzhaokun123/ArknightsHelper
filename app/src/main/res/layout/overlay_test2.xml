@@ -72,17 +72,43 @@
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/go_home"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="go home" />
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/onPrepare"
+                <Button
+                    android:id="@+id/go_home"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="go home" />
+
+                <Button
+                    android:id="@+id/once_operation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="once operation" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="on Prepare" />
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/onPrepare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="on Prepare" />
+
+                <Button
+                    android:id="@+id/operation_loop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="operation loop" />
+            </LinearLayout>
 
             <Button
                 android:id="@+id/onTroop"

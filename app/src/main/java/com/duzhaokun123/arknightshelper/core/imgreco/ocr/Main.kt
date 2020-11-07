@@ -8,9 +8,10 @@ import org.opencv.core.Point
 import org.opencv.core.Rect
 
 object Main {
-    const val TAG = "Main"
+    private const val TAG = "Main"
 
     fun checkMain(img: Mat, logger: Logger? = null): Boolean {
+        val func = "checkMain"
         val vw: Double
         val vh: Double
         Util.getVwvh(img.size()).let {
@@ -30,8 +31,8 @@ object Main {
             gear2 = it.second
         }
         val result = Imgops.compareCcoeff(gear1, gear2)
-        logger?.logImg(TAG, gear1, "checkMain", "gear1", Log.DEBUG)
-        logger?.debug(TAG, "checkMain: ccoeff = $result")
+        logger?.logImg(TAG, gear1, func, "gear1", Log.DEBUG)
+        logger?.debug(TAG, func, "ccoeff = $result")
         return result > 0.9
     }
 }

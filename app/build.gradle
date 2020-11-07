@@ -50,7 +50,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -59,7 +59,7 @@ dependencies {
     implementation project(':opencv')
 
     //overlaywindow
-    implementation project(':overlayindow')
+    implementation project(':overlaywindow')
 
     //preferencex
     implementation 'androidx.preference:preference-ktx:1.1.1'
@@ -83,6 +83,6 @@ dependencies {
     //tess-two
     implementation 'com.rmtheis:tess-two:9.0.0'
 
-//    //JavaCPP Presets for Tesseract
-//    implementation 'org.bytedeco:tesseract-platform:4.1.1-1.5.4'
+    //kotlin-reflect
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 }

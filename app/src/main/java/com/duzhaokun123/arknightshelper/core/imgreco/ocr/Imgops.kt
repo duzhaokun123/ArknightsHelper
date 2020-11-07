@@ -22,6 +22,8 @@ object Imgops {
         return Pair(re1, re2)
     }
 
+    fun compareMse(pair: Pair<Mat, Mat>) = Imgops.compareMse(pair.first, pair.second)
+
     /**
      * def compare_mse(mat1, mat2):
      *     """max 65025 (255**2) for 8bpc image"""

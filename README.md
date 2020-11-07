@@ -4,16 +4,26 @@
 还在早期
 
 ## 现在有什么
+- 通过 Root 交互
 - 两个丑陋的悬浮窗用于测试
 
 ## 将来会有什么
 - [ArknightsAutoHelper](https://github.com/ninthDevilHAUNSTER/ArknightsAutoHelper) 的除开机自启动批处理以外的全部功能
 - [ArknightsTap](https://github.com/IcebemAst/ArknightsTap) 的全部功能
 - 更好的界面和反馈
+- 免 Root 交互方式
 
 # 警告
 - 字符串硬编码, 不国际化
-- Arknights Helper 假设你的环境与测试时相同, 即屏幕尺寸 1080x2160, 无刘海屏, 无颜色矫正或颜色反转, 最小宽度 585dp, 游戏全屏运行, 游戏异型屏适配值为 0
+- Arknights Helper 假设你的环境与测试时相同, 即
+  - 屏幕尺寸 1080x2160
+  - 无刘海屏
+  - 无颜色矫正或颜色反转
+  - 最小宽度 585dp
+  - 游戏全屏运行
+  - 游戏异型屏适配值为 0
+  - 已 Root 且授权
+  - 给予悬浮窗权限
 
 ## TODO
 - 分离`*.traineddata`

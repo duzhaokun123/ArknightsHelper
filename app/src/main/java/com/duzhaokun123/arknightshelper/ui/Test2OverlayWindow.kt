@@ -19,11 +19,11 @@ class Test2OverlayWindow(context: Context) : BaseOverlayWindow<OverlayTest2Bindi
     private val arknightsHelper by lazy {
         ArknightsHelper(
             SuUIInteractor(),
-            CallbackLogger(baseBind.scNoChild.isChecked) { tag, msg, level ->
+            CallbackLogger(baseBind.scNoChild.isChecked) { tag, func, msg, level ->
                 if (level != Log.DEBUG || baseBind.scDebug.isChecked)
                     Application.runOnUiThread {
                         if (baseBind.scNoHead.isChecked.not()) {
-                            baseBind.tvCallback.append("${Util.getLogLevelString(level)}/$tag: ")
+                            baseBind.tvCallback.append("${Util.getLogLevelString(level)}/$tag: $func: ")
                         }
                         baseBind.tvCallback.append("$msg\n")
                     }
@@ -61,9 +61,19 @@ class Test2OverlayWindow(context: Context) : BaseOverlayWindow<OverlayTest2Bindi
                 arknightsHelper.testStartOperation()
             }.start()
         }
+        baseBind.onceOperation.setOnClickListener {
+            Thread {
+                arknightsHelper.operationOnceStatemachine()
+            }.start()
+        }
         baseBind.onPrepare.setOnClickListener {
             Thread {
                 arknightsHelper.onPrepare(testSmobj, config = arknightsHelper.config)
+            }.start()
+        }
+        baseBind.operationLoop.setOnClickListener {
+            Thread {
+                arknightsHelper.operationLoop()
             }.start()
         }
         baseBind.onTroop.setOnClickListener {

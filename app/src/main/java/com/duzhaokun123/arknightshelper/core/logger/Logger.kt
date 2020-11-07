@@ -8,28 +8,28 @@ interface Logger : Closeable {
     fun logImg(
         tag: String,
         img: Mat,
-        func: String? = null,
+        func: String,
         title: String = "notitle",
         level: Int = Log.INFO
     )
 
-    fun logH1(tag: String, msg: String, level: Int = Log.INFO)
+    fun logH1(tag: String, func: String, msg: String = func, level: Int = Log.INFO)
 
-    fun logH2(tag: String, msg: String, level: Int = Log.INFO)
+    fun logH2(tag: String, func: String, msg: String = func, level: Int = Log.INFO)
 
-    fun logH3(tag: String, msg: String, level: Int = Log.INFO)
+    fun logH3(tag: String, func: String, msg: String = func, level: Int = Log.INFO)
 
-    fun logText(tag: String, msg: String, level: Int = Log.INFO)
+    fun logText(tag: String, func: String, msg: String, level: Int = Log.INFO)
 
-    fun logDivider(tag: String, level: Int = Log.INFO)
+    fun logDivider(tag: String, func: String, level: Int = Log.INFO)
 
     fun getChild(name: String): Logger
 
-    fun info(tag: String, msg: String) = logText(tag, msg, Log.INFO)
-    fun debug(tag: String, msg: String) = logText(tag, msg, Log.DEBUG)
-    fun error(tag: String, msg: String) = logText(tag, msg, Log.ERROR)
-    fun warring(tag: String, msg: String) = logText(tag, msg, Log.WARN)
-    fun verbose(tag: String, msg: String) = logText(tag, msg, Log.VERBOSE)
-    fun assert(tag: String, msg: String) = logText(tag, msg, Log.ASSERT)
+    fun info(tag: String, func: String, msg: String) = logText(tag, func, msg, Log.INFO)
+    fun debug(tag: String, func: String, msg: String) = logText(tag, func, msg, Log.DEBUG)
+    fun error(tag: String, func: String, msg: String) = logText(tag, func, msg, Log.ERROR)
+    fun warring(tag: String, func: String, msg: String) = logText(tag, func, msg, Log.WARN)
+    fun verbose(tag: String, func: String, msg: String) = logText(tag, func, msg, Log.VERBOSE)
+    fun assert(tag: String, func: String, msg: String) = logText(tag, func, msg, Log.ASSERT)
 
 }

@@ -12,6 +12,7 @@ object Common {
     const val TAG = "Common"
 
     fun checkNavButton(img: Mat, logger: Logger? = null): Boolean {
+        val func = "checkNavButton"
         val vw: Double
         val vh: Double
         Util.getVwvh(img.size()).let {
@@ -33,12 +34,13 @@ object Common {
         }
 
         val mse = Imgops.compareMse(icon1, icon2)
-        logger?.logImg(TAG, icon1, "checkNavButton", "icon1", Log.DEBUG)
-        logger?.debug(TAG, "checkNavButton: mse = $mse")
+        logger?.logImg(TAG, icon1, func, "icon1", Log.DEBUG)
+        logger?.debug(TAG, func, "mse = $mse")
         return mse.sum() < 84 && mse.sum() > 48
     }
 
     fun checkGetItemPopup(img: Mat, logger: Logger? = null): Boolean {
+        val func = "checkGetItemPopup"
         val vw: Double
         val vh: Double
         Util.getVwvh(img.size()).let {
@@ -60,12 +62,13 @@ object Common {
         }
 
         val mse = Imgops.compareMse(icon1, icon2)
-        logger?.logImg(TAG, icon1, "checkGetItemPopup", "icon1", Log.DEBUG)
-        logger?.debug(TAG, "checkGetItemPopup: mse = $mse")
+        logger?.logImg(TAG, icon1, func, "icon1", Log.DEBUG)
+        logger?.debug(TAG, func, "mse = $mse")
         return mse.sum() < 84 && mse.sum() > 48
     }
 
     fun checkSettingScreen(img: Mat, logger: Logger? = null): Boolean {
+        val func = "checkSettingScreen"
         val vw: Double
         val vh: Double
         Util.getVwvh(img.size()).let {
@@ -87,8 +90,8 @@ object Common {
         }
 
         val mse = Imgops.compareMse(icon1, icon2)
-        logger?.logImg(TAG, icon1, "checkSettingScreen", "icon1", Log.DEBUG)
-        logger?.debug(TAG, "checkSettingScreen: mse = $mse")
+        logger?.logImg(TAG, icon1, func, "icon1", Log.DEBUG)
+        logger?.debug(TAG, func, "mse = $mse")
         return mse.sum() < 84 && mse.sum() > 48
     }
 }

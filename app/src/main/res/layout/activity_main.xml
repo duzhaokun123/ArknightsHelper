@@ -45,11 +45,29 @@
             android:layout_height="wrap_content"
             android:text="file end Operation recognize" />
 
-        <Button
-            android:id="@+id/clean_cache"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="clean cache" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/clean_cache"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="clean cache" />
+
+            <Button
+                android:id="@+id/gc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="gc" />
+
+            <Button
+                android:id="@+id/runFinalization"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="run Finalization" />
+        </LinearLayout>
 
         <ScrollView
             android:layout_width="match_parent"

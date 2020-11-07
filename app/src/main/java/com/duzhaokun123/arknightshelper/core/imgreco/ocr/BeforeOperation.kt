@@ -16,7 +16,8 @@ object BeforeOperation {
     private const val TAG = "BeforeOperation"
 
     fun recognize(img: Mat, logger: Logger? = null): BeforeOperationRecognizeInfo? {
-        logger?.logH2(TAG, "recognize")
+        val func = "recognize"
+        logger?.logH2(TAG, func)
 
         val vw: Double
         val vh: Double
@@ -38,12 +39,12 @@ object BeforeOperation {
             apicoin2 = it.second
         }
         var mse = Imgops.compareMse(apicoin1, apicoin2)
-        logger?.logImg(TAG, apicoin1, func = "recognize:", title = "apicoin1")
-        logger?.logText(TAG, "recognize: mse = $mse")
+        logger?.logImg(TAG, apicoin1, "recognize", "apicoin1")
+        logger?.logText(TAG, func, " mse = $mse")
         val consumeAp =
             mse.sum() < 3251 // FIXME: 20-10-24 这等效于 Python mse = imgops.compare_mse(apicon1, apicon2) 吗
-        logger?.logText(TAG, "recognize: consumeAp: $consumeAp")
-        logger?.logDivider(TAG)
+        logger?.logText(TAG, func, " consumeAp: $consumeAp")
+        logger?.logDivider(TAG, func)
 
         val apimg = img.crop(
             Rect(
@@ -51,10 +52,10 @@ object BeforeOperation {
                 Point(100 * vw, 8.194 * vh)
             )
         )
-        logger?.logImg(TAG, apimg, func = "recognize:", title = "apimg")
+        logger?.logImg(TAG, apimg, func, "apimg")
         val apText = TesseractOCR.process(apimg) ?: return null
-        logger?.logText(TAG, "recognize: apText: $apText")
-        logger?.logDivider(TAG)
+        logger?.logText(TAG, func, " apText: $apText")
+        logger?.logDivider(TAG, func)
 
         val opidimg = img.crop(
             Rect(
@@ -62,10 +63,10 @@ object BeforeOperation {
                 Point(100 * vw - 44.028 * vh, 15.139 * vh)
             )
         )
-        logger?.logImg(TAG, opidimg, func = "recognize:", title = "opidimg")
+        logger?.logImg(TAG, opidimg, func, "opidimg")
         val opidtext = (TesseractOCR.process(opidimg) ?: return null).fixStageName(logger)
-        logger?.logText(TAG, "recognize: opidtext: $opidtext")
-        logger?.logDivider(TAG)
+        logger?.logText(TAG, func, " opidtext: $opidtext")
+        logger?.logDivider(TAG, func)
 
         val delegateimg = img.crop(
             Rect(
@@ -73,13 +74,13 @@ object BeforeOperation {
                 Point(100 * vw - 4.861 * vh, 85.417 * vh)
             )
         )
-        logger?.logImg(TAG, delegateimg, func = "recognize:", title = "delegateimg")
+        logger?.logImg(TAG, delegateimg, "recognize", "delegateimg")
         val template = Resources.loadImage("before_operation/delegation_checked.png")!!
         mse = Imgops.compareMse(delegateimg, template)
-        logger?.logText(TAG, "recognize: mse: $mse")
+        logger?.logText(TAG, func, " mse: $mse")
         val delegated = mse.sum() > 100
-        logger?.logText(TAG, "recognize: delegated: $delegated")
-        logger?.logDivider(TAG)
+        logger?.logText(TAG, func, " delegated: $delegated")
+        logger?.logDivider(TAG, func)
 
         val consumeimg = img.crop(
             Rect(
@@ -87,17 +88,18 @@ object BeforeOperation {
                 Point(100 * vw - 7.222 * vh, 97.361 * vh)
             )
         )
-        logger?.logImg(TAG, consumeimg, func = "recognize:", title = "consumeimg")
-        val rawConsumetext = (TesseractOCR.process(consumeimg).notEmptyOrNull() ?: return null).replace('o', '0')
-        logger?.logText(TAG, "recognize: rawConsumetext: $rawConsumetext")
+        logger?.logImg(TAG, consumeimg, "recognize", "consumeimg")
+        val rawConsumetext =
+            (TesseractOCR.process(consumeimg).notEmptyOrNull() ?: return null).replace('o', '0')
+        logger?.logText(TAG, func, " rawConsumetext: $rawConsumetext")
         val consumetext =
             if (rawConsumetext.startsWith("-")) {
                 rawConsumetext.substring(1, rawConsumetext.length)
             } else {
                 rawConsumetext
             }
-        logger?.logText(TAG, "recognize: consumetext: $consumetext")
-        logger?.logDivider(TAG)
+        logger?.logText(TAG, func, " consumetext: $consumetext")
+        logger?.logDivider(TAG, func)
 
         if (consumetext.isDigitsOnly().not()) {
             return null
@@ -113,7 +115,8 @@ object BeforeOperation {
     }
 
     fun checkConfirmTroopRect(img: Mat, logger: Logger? = null): Boolean {
-        logger?.logH2(TAG, "checkConfirmTroopRect")
+        val func = "checkConfirmTroopRect"
+        logger?.logH2(TAG, func)
 
         val vw: Double
         val vh: Double
@@ -135,7 +138,7 @@ object BeforeOperation {
         }
         val ccoeff = Imgops.compareCcoeff(icon1, icon2)
         logger?.logImg(TAG, icon1, "checkConfirmTroopRect", "icon1")
-        logger?.logText(TAG, "checkConfirmTroopRect: ccoeff = $ccoeff")
+        logger?.logText(TAG, func, "ccoeff = $ccoeff")
 
         return ccoeff > 0.9
     }
@@ -145,7 +148,8 @@ object BeforeOperation {
     const val REFILL_TYPE_ORIGINIUM = 2
 
     fun checkApRefillType(img: Mat, logger: Logger? = null): Int {
-        logger?.logH2(TAG, "checkApRefillType")
+        val func = "checkApRefillType"
+        logger?.logH2(TAG, func)
 
         val vw: Double
         val vh: Double
@@ -175,7 +179,7 @@ object BeforeOperation {
         val mse2 = Imgops.compareMse(icon1, icon3)
 
         logger?.logImg(TAG, icon1, "checkApRefillType", "icon1")
-        logger?.logText(TAG, "checkApRefillType: mse1 = $mse1, mse2 = $mse2")
+        logger?.logText(TAG, func, "mse1 = $mse1, mse2 = $mse2")
 
         if (max(mse1.sum(), mse2.sum()) < 100) { // FIXME: 20-10-31  都匹配不上
             return REFILL_TYPE_NONE

@@ -1,4 +1,4 @@
-include ':overlayindow'
+include ':overlaywindow'
 include ':opencv'
 include ':app'
 project(':opencv').projectDir = new File(rootDir, 'third_party/OpenCV-android-sdk/sdk/')

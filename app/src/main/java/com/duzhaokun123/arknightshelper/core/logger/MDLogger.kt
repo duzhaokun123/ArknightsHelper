@@ -1,7 +1,6 @@
 package com.duzhaokun123.arknightshelper.core.logger
 
 import android.os.Environment
-import android.util.Log
 import com.duzhaokun123.arknightshelper.application
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util
 import org.opencv.core.Mat
@@ -32,33 +31,33 @@ class MDLogger private constructor(private val path: String, name: String) : Log
     override fun logImg(
         tag: String,
         img: Mat,
-        func: String?,
+        func: String,
         title: String,
         level: Int
     ) {
         val name = "$title${Random.nextInt()}.png"
         val file = File(path, name).path
         Imgcodecs.imwrite(file, img)
-        writeFile("![$title](./$name)\n\n", level)
+        writeFile("$func: ![$title](./$name)\n\n", level)
     }
 
-    override fun logH1(tag: String, msg: String, level: Int) {
+    override fun logH1(tag: String, func: String, msg: String, level: Int) {
         writeFile("# $msg\n\n")
     }
 
-    override fun logH2(tag: String, msg: String, level: Int) {
+    override fun logH2(tag: String, func: String, msg: String, level: Int) {
         writeFile("## $msg\n\n")
     }
 
-    override fun logH3(tag: String, msg: String, level: Int) {
+    override fun logH3(tag: String, func: String, msg: String, level: Int) {
         writeFile("### $msg\n\n")
     }
 
-    override fun logText(tag: String, msg: String, level: Int) {
+    override fun logText(tag: String, func: String, msg: String, level: Int) {
         writeFile("$msg\n\n", level)
     }
 
-    override fun logDivider(tag: String, level: Int) {
+    override fun logDivider(tag: String, func: String, level: Int) {
         writeFile("---\n\n")
     }
 

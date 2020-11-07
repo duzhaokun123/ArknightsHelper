@@ -22,6 +22,14 @@ object Util {
         return dst
     }
 
+    fun Mat.crop(
+        left: Double,
+        upper: Double,
+        right: Double,
+        lower: Double,
+        copy: Boolean = false
+    ): Mat = crop(Rect(Point(left, upper), Point(right, lower)), copy)
+
     fun Mat.crop(rect: Rect, copy: Boolean = false): Mat {
         var re = Mat(this, rect)
         if (copy) {

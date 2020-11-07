@@ -67,7 +67,7 @@ object TesseractOCR {
             } else {
                 s2
             }
-        logger?.debug(TAG, "String.fixStageName: $this fix to $s3")
+        logger?.debug(TAG, "String.fixStageName", "$this fix to $s3")
         return s3
     }
 }

@@ -4,28 +4,28 @@ import android.util.Log
 import org.opencv.core.Mat
 
 class AndroidLogger : Logger {
-    override fun logImg(tag: String, img: Mat, func: String?, title: String, level: Int) {
-        Log.println(level, tag, "$func log img $title")
+    override fun logImg(tag: String, img: Mat, func: String, title: String, level: Int) {
+        Log.println(level, tag, "$func: log img $title")
     }
 
-    override fun logH1(tag: String, msg: String, level: Int) {
-        Log.println(level, tag, "h1 $msg")
+    override fun logH1(tag: String,func: String, msg: String, level: Int) {
+        Log.println(level, tag, "$func: H1 $msg")
     }
 
-    override fun logH2(tag: String, msg: String, level: Int) {
-        Log.println(level, tag, "H2 $msg")
+    override fun logH2(tag: String,func: String, msg: String, level: Int) {
+        Log.println(level, tag, "$func: H2 $msg")
     }
 
-    override fun logH3(tag: String, msg: String, level: Int) {
-        Log.println(level, tag, "H3 $msg")
+    override fun logH3(tag: String, func: String,msg: String, level: Int) {
+        Log.println(level, tag, "$func: H3 $msg")
     }
 
-    override fun logText(tag: String, msg: String, level: Int) {
-        Log.println(level, tag, msg)
+    override fun logText(tag: String,func: String, msg: String, level: Int) {
+        Log.println(level, tag, "$func: $msg")
     }
 
-    override fun logDivider(tag: String, level: Int) {
-        Log.println(level, tag, "---")
+    override fun logDivider(tag: String,func: String, level: Int) {
+        Log.println(level, tag, "$func: ------")
     }
 
     override fun getChild(name: String): Logger {
