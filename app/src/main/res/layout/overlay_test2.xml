@@ -14,11 +14,23 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/mini"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="mini" />
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/mini"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="mini" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/resume"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="resume" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -110,11 +122,24 @@
                     android:text="operation loop" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/onTroop"
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="on Troop" />
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/onTroop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="on Troop" />
+
+                <Button
+                    android:id="@+id/daily_task"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="daily task" />
+            </LinearLayout>
 
             <Button
                 android:id="@+id/onLevelIpPopup"
@@ -147,12 +172,11 @@
                 android:text="stop" />
         </LinearLayout>
 
-        <TextView
+        <com.duzhaokun123.logtextview.LogTextView
             android:id="@+id/tv_callback"
             android:layout_width="300dp"
             android:layout_height="match_parent"
-            android:background="@color/black"
-            android:textColor="@color/white"
-            android:textIsSelectable="true" />
+            android:textIsSelectable="true"
+            android:textSize="12sp" />
     </LinearLayout>
 </layout>

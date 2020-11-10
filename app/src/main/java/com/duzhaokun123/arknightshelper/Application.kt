@@ -1,7 +1,6 @@
 package com.duzhaokun123.arknightshelper
 
 import android.app.Notification
-import android.os.Message
 import androidx.appcompat.app.AppCompatDelegate
 import com.duzhaokun123.arknightshelper.utils.Handler
 import com.duzhaokun123.arknightshelper.utils.NotificationUtil
@@ -9,6 +8,7 @@ import com.duzhaokun123.arknightshelper.utils.Settings
 import com.duzhaokun123.overlaywindow.OverlayService
 //import com.google.gson.Gson
 import com.topjohnwu.superuser.Shell
+import kotlinx.coroutines.*
 import org.opencv.android.OpenCVLoader
 
 class Application : android.app.Application(), Handler.IHandlerMessageCallback {
@@ -16,11 +16,14 @@ class Application : android.app.Application(), Handler.IHandlerMessageCallback {
         lateinit var instance: Application
             private set
 
-        private lateinit var handler: Handler
-
-        fun runOnUiThread(callback: Runnable?) {
-            val message = Message.obtain(handler, callback)
-            handler.sendMessage(message)
+        /**
+         * @param blocking true 阻塞当期线程
+         */
+        fun runOnUiThread(blocking: Boolean = false, block: suspend CoroutineScope.() -> Unit) {
+            if (blocking)
+                runBlocking(Dispatchers.Main, block = block)
+            else
+                GlobalScope.launch(Dispatchers.Main, block = block)
         }
     }
 
@@ -52,7 +55,6 @@ class Application : android.app.Application(), Handler.IHandlerMessageCallback {
 
     init {
         instance = this
-        handler = Handler(this)
     }
 }
 

@@ -85,4 +85,8 @@ object Util {
     operator fun Rect.times(scale: Int): Rect {
         return Rect(this.x * scale, this.y * scale, this.width * scale, this.height * scale)
     }
+
+    operator fun Mat.get(point: Point): Double {
+        return get(point.y.toInt(), point.x.toInt())[0]
+    }
 }

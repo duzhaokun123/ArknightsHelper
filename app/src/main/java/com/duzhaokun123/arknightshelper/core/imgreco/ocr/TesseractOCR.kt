@@ -66,8 +66,14 @@ object TesseractOCR {
                 s2.replaceFirst("R--", "RI-")
             } else {
                 s2
-            }
+            }.replace(" ", "")
         logger?.debug(TAG, "String.fixStageName", "$this fix to $s3")
         return s3
+    }
+
+    fun String.fixApString(logger: Logger? = null): String {
+        val s1 = this.replace(Regex("[oO]"), "0")
+        logger?.debug(TAG, "String.fixApString", "$this fix to $s1")
+        return s1
     }
 }

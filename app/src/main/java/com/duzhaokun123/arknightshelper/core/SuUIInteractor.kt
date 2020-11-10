@@ -12,7 +12,7 @@ class SuUIInteractor : UIInteractor {
 
     override fun getScreencap() = SuUtil.getScreencap()
 
-    override fun touch(x: Int, y: Int) {
+    override fun touch(x: Double, y: Double) {
         SuUtil.inputTap(x, y)
     }
 

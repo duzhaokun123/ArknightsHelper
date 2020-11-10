@@ -9,10 +9,10 @@ import com.duzhaokun123.arknightshelper.R
 import com.duzhaokun123.arknightshelper.bases.BaseOverlayWindow
 import com.duzhaokun123.arknightshelper.core.SuUIInteractor
 import com.duzhaokun123.arknightshelper.core.arknights.ArknightsHelper
-import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util
 import com.duzhaokun123.arknightshelper.core.logger.CallbackLogger
 import com.duzhaokun123.arknightshelper.core.model.ArknightsHelperConfig
 import com.duzhaokun123.arknightshelper.databinding.OverlayTest2Binding
+import com.duzhaokun123.logtextview.LogTextView
 import com.duzhaokun123.overlaywindow.OverlayService.Companion.toAction
 
 class Test2OverlayWindow(context: Context) : BaseOverlayWindow<OverlayTest2Binding>(context) {
@@ -22,12 +22,14 @@ class Test2OverlayWindow(context: Context) : BaseOverlayWindow<OverlayTest2Bindi
             CallbackLogger(baseBind.scNoChild.isChecked) { tag, func, msg, level ->
                 if (level != Log.DEBUG || baseBind.scDebug.isChecked)
                     Application.runOnUiThread {
-                        if (baseBind.scNoHead.isChecked.not()) {
-                            baseBind.tvCallback.append("${Util.getLogLevelString(level)}/$tag: $func: ")
-                        }
-                        baseBind.tvCallback.append("$msg\n")
+                        baseBind.tvCallback.appendLog(
+                            LogTextView.parserAndroidLogLevel(level),
+                            tag,
+                            func,
+                            msg
+                        )
                     }
-            }, ArknightsHelperConfig(), this.toAction(), "Test2OverlayWindow"
+            }, ArknightsHelperConfig(canRefill = baseBind.resume.isChecked, refillWithItem = true), this.toAction(), "Test2OverlayWindow"
         )
     }
 
@@ -108,6 +110,14 @@ class Test2OverlayWindow(context: Context) : BaseOverlayWindow<OverlayTest2Bindi
         }
         baseBind.stop.setOnClickListener {
             selfDestroy()
+        }
+        baseBind.scNoHead.setOnCheckedChangeListener { _, isChecked ->
+            baseBind.tvCallback.simple = isChecked
+        }
+        baseBind.dailyTask.setOnClickListener {
+            Thread {
+                arknightsHelper.clearDailyTask()
+            }.start()
         }
     }
 

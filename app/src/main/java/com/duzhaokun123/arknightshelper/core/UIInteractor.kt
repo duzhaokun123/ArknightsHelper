@@ -11,7 +11,7 @@ interface UIInteractor {
 
     fun getScreencap(): Mat
 
-    fun touch(x: Int, y: Int)
+    fun touch(x: Double, y: Double)
 
     fun clickBack()
 

@@ -3,6 +3,7 @@ package com.duzhaokun123.arknightshelper.core.imgreco.ocr
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util.minus
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util.resize
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util.times
+import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util.get
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 
@@ -40,12 +41,28 @@ object Imgops {
         return Core.mean(diff * diff)
     }
 
+    fun compareCcoeff(pair: Pair<Mat, Mat>) = compareCcoeff(pair.first, pair.second)
+
     fun compareCcoeff(img1: Mat, img2: Mat): Double {
         assert(img1.size() == img2.size() && img1.channels() == img2.channels())
         val result = Mat()
         Imgproc.matchTemplate(img1, img2, result, Imgproc.TM_CCOEFF_NORMED)
         return result[0, 0][0]
     }
-}
 
+    fun matchTemplate(
+        img: Mat,
+        template: Mat,
+        method: Int = Imgproc.TM_CCOEFF_NORMED
+    ): Pair<Point, Double> {
+        val result = Mat()
+        Imgproc.matchTemplate(img, template, result, method)
+        val maxIdx =
+            if (method == Imgproc.TM_SQDIFF_NORMED || method == Imgproc.TM_SQDIFF)
+                Core.minMaxLoc(result).minLoc
+            else
+                Core.minMaxLoc(result).maxLoc
+        return Pair(maxIdx, result[maxIdx])
+    }
+}
 

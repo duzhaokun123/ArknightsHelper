@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.duzhaokun123.arknightshelper.Application
+import com.duzhaokun123.arknightshelper.application
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
@@ -25,11 +25,11 @@ object TipUtil {
     }
 
     fun showToast(msg: CharSequence) {
-        Toast.makeText(Application.instance, msg, Toast.LENGTH_LONG).show()
+        Toast.makeText(application, msg, Toast.LENGTH_LONG).show()
     }
 
     fun showToast(@StringRes resId: Int) {
-        Toast.makeText(Application.instance, resId, Toast.LENGTH_LONG).show()
+        Toast.makeText(application, resId, Toast.LENGTH_LONG).show()
     }
 
     fun showSnackbar(coordinatorLayout: CoordinatorLayout, msg: CharSequence) {
@@ -37,7 +37,7 @@ object TipUtil {
     }
 
     fun showSnackbar(coordinatorLayout: CoordinatorLayout, @StringRes resId: Int) {
-        showSnackbar(coordinatorLayout, Application.instance.getString(resId))
+        showSnackbar(coordinatorLayout, application.getString(resId))
     }
 
     fun showTip(context: Context?, msg: CharSequence) {
@@ -56,6 +56,6 @@ object TipUtil {
     }
 
     fun showTip(context: Context?, @StringRes resId: Int) {
-        showTip(context, Application.instance.getString(resId))
+        showTip(context, application.getString(resId))
     }
 }

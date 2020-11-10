@@ -5,12 +5,14 @@ import android.content.Intent
 import com.duzhaokun123.arknightshelper.R
 import com.duzhaokun123.arknightshelper.bases.BaseActivity
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.BeforeOperation
+import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Common
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.EndOperation
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util
 import com.duzhaokun123.arknightshelper.core.logger.AndroidLogger
 import com.duzhaokun123.arknightshelper.core.logger.CallbackLogger
 import com.duzhaokun123.arknightshelper.core.logger.MDLogger
 import com.duzhaokun123.arknightshelper.core.logger.MultiLogger
+import com.duzhaokun123.arknightshelper.core.model.CommonCheckDialogInfo
 import com.duzhaokun123.arknightshelper.databinding.ActivityMainBinding
 import com.duzhaokun123.arknightshelper.utils.TipUtil
 import com.duzhaokun123.overlaywindow.OverlayService
@@ -20,6 +22,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         const val REQUEST_OPEN_FILE_BEFORE_OPERATION_RECOGNIZE = 1
         const val REQUEST_OPEN_FILE_BEFORE_OPERATION_CCTR = 2
         const val REQUEST_OPEN_FILE_END_OPERATION_RECOGNIZE = 3
+        const val REQUEST_OPEN_FILE_DIALOG = 4
     }
 
     private val logger by lazy {
@@ -58,6 +61,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         baseBind.runFinalization.setOnClickListener {
             System.runFinalization()
         }
+        baseBind.operationLoop.setOnClickListener {
+            OverlayService.addWindow(OperationLoopOverlayWindow(this)).show()
+        }
+        baseBind.fileDialog.setOnClickListener {
+            requestImgFor(REQUEST_OPEN_FILE_DIALOG)
+        }
     }
 
     override fun initData() {
@@ -77,10 +86,21 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                                     BeforeOperation.checkConfirmTroopRect(it, logger)
                                 REQUEST_OPEN_FILE_END_OPERATION_RECOGNIZE ->
                                     EndOperation.recognize(it, logger)
+                                REQUEST_OPEN_FILE_DIALOG -> {
+                                    val dialog = Common.recognizeDialog(it)
+                                    "dialog: $dialog\n" +
+                                            if (dialog?.type == CommonCheckDialogInfo.Type.YES_NO) {
+                                                "left: ${Common.getDialogLeftButtonRect(it)}\n" +
+                                                        "right ${Common.getDialogRightButtonRect(it)}"
+                                            } else if (dialog?.type == CommonCheckDialogInfo.Type.OK) {
+                                                "ok: ${Common.getDialogOkButtonRect(it)}"
+                                            } else ""
+                                }
                                 else -> "bad code $requestCode"
                             }
                         runOnUiThread {
                             TipUtil.showToast("$result")
+                            baseBind.tvCallback.append("$result\n")
                         }
                     }.start()
                 }

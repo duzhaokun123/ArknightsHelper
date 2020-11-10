@@ -4,4 +4,12 @@
     <string name="showing_overlay">显示叠加层中</string>
     <string name="permission_request">权限请求</string>
     <string name="msg_overlay_request">需要叠加层权限</string>
+    <string name="operation_loop">行动循环</string>
+    <string name="start">开始</string>
+    <string name="until">直到</string>
+    <string name="times">次</string>
+    <string name="get_focus">获取焦点</string>
+    <string name="close">关闭</string>
+    <string name="stop">停止</string>
+    <string name="quit_when_finish">在结束后退出</string>
 </resources>

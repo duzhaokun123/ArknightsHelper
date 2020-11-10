@@ -1,3 +1,4 @@
+include ':logtextview'
 include ':overlaywindow'
 include ':opencv'
 include ':app'

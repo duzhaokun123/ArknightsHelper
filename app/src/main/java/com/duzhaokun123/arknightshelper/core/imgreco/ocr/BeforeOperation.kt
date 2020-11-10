@@ -1,6 +1,7 @@
 package com.duzhaokun123.arknightshelper.core.imgreco.ocr
 
 import androidx.core.text.isDigitsOnly
+import com.duzhaokun123.arknightshelper.core.imgreco.ocr.TesseractOCR.fixApString
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.TesseractOCR.fixStageName
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util.crop
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util.sum
@@ -19,12 +20,7 @@ object BeforeOperation {
         val func = "recognize"
         logger?.logH2(TAG, func)
 
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(img.size()).let {
-            vw = it.first
-            vh = it.second
-        }
+        val (vw, vh) = Util.getVwvh(img.size())
 
         var apicoin1 = img.crop(
             Rect(
@@ -53,7 +49,7 @@ object BeforeOperation {
             )
         )
         logger?.logImg(TAG, apimg, func, "apimg")
-        val apText = TesseractOCR.process(apimg) ?: return null
+        val apText = (TesseractOCR.process(apimg) ?: return null).fixApString(logger)
         logger?.logText(TAG, func, " apText: $apText")
         logger?.logDivider(TAG, func)
 
@@ -90,7 +86,7 @@ object BeforeOperation {
         )
         logger?.logImg(TAG, consumeimg, "recognize", "consumeimg")
         val rawConsumetext =
-            (TesseractOCR.process(consumeimg).notEmptyOrNull() ?: return null).replace('o', '0')
+            (TesseractOCR.process(consumeimg).notEmptyOrNull() ?: return null).fixApString(logger)
         logger?.logText(TAG, func, " rawConsumetext: $rawConsumetext")
         val consumetext =
             if (rawConsumetext.startsWith("-")) {
@@ -118,12 +114,7 @@ object BeforeOperation {
         val func = "checkConfirmTroopRect"
         logger?.logH2(TAG, func)
 
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(img.size()).let {
-            vw = it.first
-            vh = it.second
-        }
+        val (vw, vh) = Util.getVwvh(img.size())
 
         var icon1 = img.crop(
             Rect(
@@ -151,12 +142,7 @@ object BeforeOperation {
         val func = "checkApRefillType"
         logger?.logH2(TAG, func)
 
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(img.size()).let {
-            vw = it.first
-            vh = it.second
-        }
+        val (vw, vh) = Util.getVwvh(img.size())
 
         var icon1 = img.crop(
             Rect(
@@ -169,26 +155,26 @@ object BeforeOperation {
             icon1 = it.first
             icon2 = it.second
         }
-        val mse1 = Imgops.compareMse(icon1, icon2)
+        val ccoeff1 = Imgops.compareCcoeff(icon1, icon2)
 
         var icon3 = Resources.loadImage("before_operation/refill_with_originium.png")!!
         Imgops.uniformSize(icon1, icon3).let {
             icon1 = it.first
             icon3 = it.second
         }
-        val mse2 = Imgops.compareMse(icon1, icon3)
+        val ccoeff2 = Imgops.compareCcoeff(icon1, icon3)
 
         logger?.logImg(TAG, icon1, "checkApRefillType", "icon1")
-        logger?.logText(TAG, func, "mse1 = $mse1, mse2 = $mse2")
+        logger?.logText(TAG, func, "coeff1 = $ccoeff1, ccoeff2 = $ccoeff2")
 
-        if (max(mse1.sum(), mse2.sum()) < 100) { // FIXME: 20-10-31  都匹配不上
+        if (max(ccoeff1, ccoeff2) < 0.5) {
             return REFILL_TYPE_NONE
         }
-        if (mse1.sum() > mse2.sum()) {
+        if (ccoeff1 > ccoeff2) {
             return REFILL_TYPE_ITEM
         }
 
-        // FIXME: 20-10-31 始终假设源石足够, 因为开发者的源石实在太多了
+        // FIXME: 20-10-31 始终假设源石足够, 因为开发者的源石实在太多了, 没法测试
         return REFILL_TYPE_ORIGINIUM
     }
 }

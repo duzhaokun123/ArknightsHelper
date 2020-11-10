@@ -6,6 +6,7 @@
 ## 现在有什么
 - 通过 Root 交互
 - 两个丑陋的悬浮窗用于测试
+- 一个还能看的悬浮窗进行行动循环(类似于 ArknightsAutoHelper 的 quick, 但不能回复理智)
 
 ## 将来会有什么
 - [ArknightsAutoHelper](https://github.com/ninthDevilHAUNSTER/ArknightsAutoHelper) 的除开机自启动批处理以外的全部功能

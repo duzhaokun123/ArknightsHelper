@@ -1,6 +1,5 @@
 package com.duzhaokun123.arknightshelper.core.arknights
 
-import android.util.Log
 import com.duzhaokun123.arknightshelper.Application
 import com.duzhaokun123.arknightshelper.core.Flags
 import com.duzhaokun123.arknightshelper.core.logger.MDLogger
@@ -11,12 +10,12 @@ import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util.sum
 import com.duzhaokun123.arknightshelper.core.logger.AndroidLogger
 import com.duzhaokun123.arknightshelper.core.logger.CallbackLogger
 import com.duzhaokun123.arknightshelper.core.logger.MultiLogger
-import com.duzhaokun123.arknightshelper.core.model.ArknightsHelperConfig
-import com.duzhaokun123.arknightshelper.core.model.ArknightsHelperState
-import com.duzhaokun123.arknightshelper.core.model.BeforeOperationRecognizeInfo
-import com.duzhaokun123.arknightshelper.core.model.EndOperationRecognizeInfo
+import com.duzhaokun123.arknightshelper.core.model.*
 import com.duzhaokun123.arknightshelper.utils.TipUtil
 import com.duzhaokun123.overlaywindow.OverlayService
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Rect
@@ -39,7 +38,7 @@ class ArknightsHelper(
 
     private val screenSize by lazy {
         uiInteractor.screenSize.also {
-            logger.debug(TAG, "screenSize", it.toString())
+            logger.debug(TAG, "screenSize", "screenSize: $it")
         }
     }
 
@@ -49,27 +48,30 @@ class ArknightsHelper(
 
     }
 
-    fun operationLoop() {
+    /**
+     * @param times 0 无限
+     */
+    fun operationLoop(times: Int = 0) {
         val func = "operationLoop"
-        logger.logH2(TAG, func)
-        var count = 1
-        while (true) {
+        logger.logH1(TAG, func)
+        helperState.operationTime.removeAll { true }
+        var count = 0
+        while (times == 0 || count != times) {
+            logger.info(TAG, func, "开始第 ${count + 1} 次")
             if (operationOnceStatemachine()) {
                 count++
             } else {
-                logger.error(TAG, func, "在第 $count 次失败")
-                return
+                logger.error(TAG, func, "在第 ${count + 1} 次失败")
+                break
             }
+            logger.logDivider(TAG, func)
         }
+        logger.logDivider(TAG, func)
+        logger.info(TAG, func, "$count 次战斗完成")
     }
 
     fun login() {
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(screenSize).let {
-            vw = it.first
-            vh = it.second
-        }
+        val (vw, vh) = Util.getVwvh(screenSize)
 
         interactorSpace {
             clickButton(
@@ -83,12 +85,7 @@ class ArknightsHelper(
         val func = "goHome"
         logger.info(TAG, func, "正在返回主页")
 
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(screenSize).let {
-            vw = it.first
-            vh = it.second
-        }
+        val (vw, vh) = Util.getVwvh(screenSize)
 
         while (true) {
             var screenshot: Mat? = null
@@ -109,7 +106,7 @@ class ArknightsHelper(
                         Point(20.972 * vh, 7.917 * vh)
                     )
                 }
-                Thread.sleep(Flags.SMALL_WAIT)
+                _wait(Flags.SMALL_WAIT)
                 continue
             }
 
@@ -122,7 +119,7 @@ class ArknightsHelper(
                         Point(100 * vw - 5.833 * vh, 87.222 * vh)
                     )
                 }
-                Thread.sleep(Flags.SMALL_WAIT)
+                _wait(Flags.SMALL_WAIT)
                 continue
             }
 
@@ -135,7 +132,7 @@ class ArknightsHelper(
                         Point(19.444 * vh, 8.333 * vh)
                     )
                 }
-                Thread.sleep(Flags.SMALL_WAIT)
+                _wait(Flags.SMALL_WAIT)
                 continue
             }
 
@@ -157,12 +154,7 @@ class ArknightsHelper(
     }
 
     fun setDelegate() {
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(screenSize).let {
-            vw = it.first
-            vh = it.second
-        }
+        val (vw, vh) = Util.getVwvh(screenSize)
 
         interactorSpace {
             clickButton(
@@ -178,20 +170,14 @@ class ArknightsHelper(
     fun quitGame(packageName: String = "com.hypergryph.arknights"): Boolean {
         val func = "quitGame"
         logger.logH2(TAG, func)
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(screenSize).let {
-            vw = it.first
-            vh = it.second
-        }
 
         val goHomeRe = goHome()
         return if (goHomeRe) {
             uiInteractor.clickBack()
+            Thread.sleep(Flags.TINY_WAIT)
             interactorSpace {
                 clickButton(
-                    Point(50 * vw + 6.759 * vh, 65.648 * vh),
-                    Point(50 * vw + 92.685 * vh, 75.185 * vh)
+                    Common.getDialogRightButtonRect(uiInteractor.getScreencap())
                 )
             }
             logger.info(TAG, func, "已退出游戏")
@@ -240,15 +226,15 @@ class ArknightsHelper(
                 OperationOnceState.State.NONE -> false
             }
             if (!result) {
-                logger.logText(TAG, func, "在 $oldState 时失败")
+                logger.error(TAG, func, "在 $oldState 时失败")
                 return false
             }
             if (smobj.state != oldState) {
-                logger.logText(TAG, func, "state change to ${smobj.state}", Log.DEBUG)
+                logger.debug(TAG, func, "state change to ${smobj.state}")
             }
         }
 
-        if (smobj.mistakenDelegation && config.behavior.skipMistakenDelegation) {
+        if (smobj.mistakenDelegation && config.behavior.skipMistakenDelegation.not()) {
             return false
         }
         return true
@@ -267,12 +253,7 @@ class ArknightsHelper(
     ): Boolean {
         val func = "onPrepare"
         logger.logH2(TAG, func)
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(screenSize).let {
-            vw = it.first
-            vh = it.second
-        }
+        val (vw, vh) = Util.getVwvh(screenSize)
 
         var recoResult: BeforeOperationRecognizeInfo?
 
@@ -290,7 +271,7 @@ class ArknightsHelper(
                 if (cid != null) {
                     // 如果传入了关卡 ID，检查识别结果
                     if (cid != recoResult!!.operation) {
-                        logger.logText(TAG, func, "不在关卡界面 is ${recoResult!!.operation} not $cid")
+                        logger.error(TAG, func, "不在关卡界面 is ${recoResult!!.operation} not $cid")
                         return false
                     }
                 }
@@ -299,9 +280,9 @@ class ArknightsHelper(
                 count++
                 if (count <= 7) {
                     logger.warring(TAG, func, "不在关卡界面")
-                    Thread.sleep(Flags.TINY_WAIT)
+                    _wait(Flags.TINY_WAIT, false)
                 } else {
-                    logger.logText(TAG, func, "${count}次检测后都不再关卡界面")
+                    logger.error(TAG, func, "${count}次检测后都不在关卡界面")
                     return false
                 }
             }
@@ -321,7 +302,7 @@ class ArknightsHelper(
                         Point(100 * vw - 3.611 * vh, 95.556 * vh)
                     )
                 }
-                Thread.sleep(Flags.SMALL_WAIT)
+                _wait(Flags.SMALL_WAIT)
                 var screenshot: Mat? = null
                 interactorSpace {
                     screenshot = uiInteractor.getScreencap()
@@ -347,7 +328,7 @@ class ArknightsHelper(
                         )
                     }
                     helperState.refillCount++
-                    Thread.sleep(Flags.MEDIUM_WAIT)
+                    _wait(Flags.MEDIUM_WAIT)
                     return true
                 }
                 logger.error(TAG, func, "未能回复理智")
@@ -364,6 +345,7 @@ class ArknightsHelper(
         if (recoResult!!.delegated.not()) {
             logger.logText(TAG, func, "设置代理指挥")
             setDelegate()
+            return true
         }
 
         logger.logText(TAG, func, "${apText}充足 开始行动")
@@ -386,18 +368,13 @@ class ArknightsHelper(
         val func = "onTroop"
         logger.logH2(TAG, func)
 
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(screenSize).let {
-            vw = it.first
-            vh = it.second
-        }
+        val (vw, vh) = Util.getVwvh(screenSize)
 
         val ready: Boolean
 
         var count = 0
         while (true) {
-            Thread.sleep(Flags.TINY_WAIT)
+            _wait(Flags.TINY_WAIT, false)
             var screenshot: Mat? = null
             interactorSpace {
                 screenshot = uiInteractor.getScreencap()
@@ -440,12 +417,7 @@ class ArknightsHelper(
         val func = "onOperation"
         logger.logH2(TAG, func)
 
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(screenSize).let {
-            vw = it.first
-            vh = it.second
-        }
+        val (vw, vh) = Util.getVwvh(screenSize)
 
         val waitTime: Long
         if (smobj.firstWait) {
@@ -456,7 +428,7 @@ class ArknightsHelper(
                     helperState.operationTime.sum() / helperState.operationTime.size - 7000
                 }
             logger.info(TAG, func, "等待 ${waitTime / 1000.0} s")
-            Thread.sleep(waitTime)
+            _wait(waitTime, false)
             smobj.firstWait = false
         }
         val t = System.currentTimeMillis() - smobj.operationStart
@@ -471,12 +443,10 @@ class ArknightsHelper(
             smobj.state = OperationOnceState.State.ON_LEVEL_UP_POPUP
             return true
         }
-        val detector = if ((smobj.prepareReco as BeforeOperationRecognizeInfo).consumeAp) {
-            EndOperation::checkEndOperation
-        } else {
-            EndOperation::checkEndOperationAlt
-        }
-        if (detector.call(screenshot)) {
+        if (EndOperation.checkEndOperation(screenshot) || EndOperation.checkEndOperationAlt(
+                screenshot
+            )
+        ) {
             logger.info(TAG, func, "战斗结束")
             helperState.operationTime.add(t)
             if (waitForStillImage(
@@ -486,11 +456,54 @@ class ArknightsHelper(
                     ), timeOut = 15000
                 ) != null
             ) {
+                _wait(Flags.TINY_WAIT, false)
                 smobj.state = OperationOnceState.State.ON_END_OPERATION
                 return true
             }
         }
-        // TODO: 20-11-4 识别代理指挥失败
+
+        val dialog = Common.recognizeDialog(screenshot)
+        if (dialog?.ocrResult != null) {
+            if (dialog.type == CommonCheckDialogInfo.Type.YES_NO && "代理指挥" in dialog.ocrResult) {
+                logger.warring(TAG, func, "代理指挥出现失误")
+                smobj.mistakenDelegation = true
+                if (config.behavior.allowMistakenDelegation) {
+                    logger.info(TAG, func, "以 2 星结算关卡")
+                    interactorSpace {
+                        clickButton(Common.getDialogRightButtonRect(screenshot))
+                    }
+                    _wait(2000)
+                    return true
+                } else {
+                    logger.info(TAG, func, "放弃关卡")
+                    interactorSpace {
+                        clickButton(Common.getDialogLeftButtonRect(screenshot))
+                    }
+                    waitForStillImage()
+                    interactorSpace {
+                        clickButton(
+                            100 * vw - 61.944 * vh,
+                            18.519 * vh,
+                            100 * vw - 5.833 * vh,
+                            87.222 * vh
+                        )
+                    }
+                    _wait(1000)
+                    return true
+                }
+            } else if (dialog.type == CommonCheckDialogInfo.Type.YES_NO && "将会恢复" in dialog.ocrResult) {
+                logger.info(TAG, func, "发现放弃行动提示，关闭")
+                interactorSpace {
+                    clickButton(Common.getDialogLeftButtonRect(screenshot))
+                }
+            } else {
+                logger.error(TAG, func, "未处理的对话框：[${dialog.type}] ${dialog.ocrResult}")
+                return false
+            }
+        }
+
+        logger.info(TAG, func, "战斗未结束")
+        _wait(Flags.BATTLE_FINISH_DETECT)
         return true
     }
 
@@ -498,14 +511,9 @@ class ArknightsHelper(
         val func = "onLevelUpPopup"
         logger.logH2(TAG, func)
 
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(screenSize).let {
-            vw = it.first
-            vh = it.second
-        }
+        val (vw, vh) = Util.getVwvh(screenSize)
 
-        Thread.sleep(Flags.SMALL_WAIT)
+        _wait(Flags.SMALL_WAIT)
         logger.info(TAG, func, "关闭升级提示")
         interactorSpace {
             clickButton(
@@ -522,30 +530,19 @@ class ArknightsHelper(
         val func = "onEndOperation"
         logger.logH2(TAG, func)
 
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(screenSize).let {
-            vw = it.first
-            vh = it.second
-        }
+        val (vw, vh) = Util.getVwvh(screenSize)
 
-        var screenshot: Mat? = null
-        interactorSpace {
-            screenshot = uiInteractor.getScreencap()
-        }
+        val screenshot = interactorSpace { uiInteractor.getScreencap() }
         logger.info(TAG, func, "离开结算画面")
         interactorSpace {
-            clickButton(
-                Point(100 * vw - 67.315 * vh, 16.019 * vh),
-                Point(100 * vw - 5.185 * vh, 71.343 * vh)
-            )
+            clickButton(50 * vw - 23.426 * vh, 23.981 * vh, 50 * vw + 31.389 * vh, 52.500 * vh)
         }
         // TODO: 上报企鹅数据
         // reportresult = penguin_stats.reporter.ReportResult.NotReported
         try {
             val drops: EndOperationRecognizeInfo?
             logger.getChild("EndOperation_recognize").use {
-                drops = EndOperation.recognize(screenshot!!, it)
+                drops = EndOperation.recognize(screenshot, it)
             }
             logger.info(TAG, func, "掉落识别结果 $drops")
             // TODO: 20-11-1 掉落识别
@@ -572,7 +569,7 @@ class ArknightsHelper(
         var n = 0
         var minerr = 65025.0
         while (System.currentTimeMillis() < ts) {
-            Thread.sleep(1000)
+            _wait(1000, false)
             var screenshot2: Mat? = null
             interactorSpace {
                 screenshot2 = uiInteractor.getScreencap()
@@ -597,6 +594,16 @@ class ArknightsHelper(
         }
         logger.error(TAG, func, "$timeOut 秒内画面未静止，最小误差 = $minerr，阈值 = $threshold")
         return null
+    }
+
+    fun clearDailyTask() {
+        val func = "clearDailyTask"
+        logger.logH1(TAG, func)
+        logger.info(TAG, func, "领取每日任务")
+        goHome()
+        val screenshot = interactorSpace { uiInteractor.getScreencap() }
+        logger.info(TAG, func, "进入任务界面")
+        // TODO: 20-11-9
     }
 
     fun testBeforeOperationRecognize(img: Mat? = null) {
@@ -644,6 +651,13 @@ class ArknightsHelper(
         }
     }
 
+    private fun clickButton(rect: Rect) = clickButton(
+        rect.x.toDouble(),
+        rect.y.toDouble(),
+        rect.width.toDouble(),
+        rect.height.toDouble()
+    )
+
     private fun clickButton(
         left: Double,
         upper: Double,
@@ -656,25 +670,36 @@ class ArknightsHelper(
         logger.debug(TAG, func, "a: $a, b: $b")
         val x =
             if (a.x < b.x) {
-                Random.nextInt(a.x.toInt(), b.x.toInt())
+                Random.nextDouble(a.x, b.x)
             } else {
-                Random.nextInt(b.x.toInt(), a.x.toInt())
+                Random.nextDouble(b.x, a.x)
             }
         val y =
             if (a.y < b.y) {
-                Random.nextInt(a.y.toInt(), b.y.toInt())
+                Random.nextDouble(a.y, b.y)
             } else {
-                Random.nextInt(b.y.toInt(), a.y.toInt())
+                Random.nextDouble(b.y, a.y)
             }
 
         logger.debug(TAG, func, "x: $x, y: $y")
         uiInteractor.touch(x, y)
     }
 
-    private inline fun <R> interactorSpace(block: () -> R): R {
-        Application.runOnUiThread { controlWindowAction?.hide() }
+    private fun _wait(tMs: Long = 10000, manlike: Boolean = true) {
+        val n = if (manlike) {
+            val m = Random.nextDouble(0.0, 0.3)
+            Random.nextLong((tMs - m * 0.5 * tMs).toLong(), (tMs + m * tMs).toLong())
+        } else tMs
+        Thread.sleep(n)
+    }
+
+    private fun <R> interactorSpace(block: () -> R): R {
+        controlWindowAction?.hide()
         val r = block()
-        Application.runOnUiThread { controlWindowAction?.show() }
+        GlobalScope.launch {
+            delay(500)
+            controlWindowAction?.show()
+        }
         return r
     }
 }

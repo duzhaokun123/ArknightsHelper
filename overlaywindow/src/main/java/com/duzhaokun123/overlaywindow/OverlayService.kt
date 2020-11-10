@@ -12,17 +12,25 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 import kotlin.random.Random
 
 class OverlayService : Service() {
     companion object {
+        private const val TAG = "OverlayService"
         private const val ACTION_SHOW_WINDOW =
             "com.duzhaokun123.overlaywindow.action.ACTION_SHOW_WINDOW"
         private const val ACTION_DESTROY_WINDOW =
             "com.duzhaokun123.overlaywindow.action.ACTION_DESTROY_WINDOW"
         private const val ACTION_STOP =
             "com.duzhaokun123.overlaywindow.action.ACTION_STOP"
+        private const val ACTION_GET_FOCUS =
+            "com.duzhaokun123.overlaywindow.action.ACTION_GET_FOCUS"
+        private const val ACTION_RELEASE_FOCUS =
+            "com.duzhaokun123.overlaywindow.action.ACTION_RELEASE_FOCUS"
 
         private const val EXTRA_TAG = "com.duzhaokun123.overlaywindow.extra.TAG"
 
@@ -83,6 +91,8 @@ class OverlayService : Service() {
                 ACTION_SHOW_WINDOW -> showWindow(it.getStringExtra(EXTRA_TAG))
                 ACTION_DESTROY_WINDOW -> destroyWindow(it.getStringExtra(EXTRA_TAG))
                 ACTION_STOP -> stop()
+                ACTION_GET_FOCUS -> getFocus(it.getStringExtra(EXTRA_TAG))
+                ACTION_RELEASE_FOCUS -> releaseFocus(it.getStringExtra(EXTRA_TAG))
             }
         }
         return super.onStartCommand(intent, flags, startId)
@@ -129,6 +139,22 @@ class OverlayService : Service() {
     private fun stop() {
         stopForeground(true)
         stopSelf()
+    }
+
+    private fun getFocus(tag: String?) {
+        tag?.let { findWindowByTag(it) }?.let {
+            val params = it.root.layoutParams as WindowManager.LayoutParams
+            params.flags = params.flags and (WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv())
+            windowManager.updateViewLayout(it.root, params)
+        }
+    }
+
+    private fun releaseFocus(tag: String?) {
+        tag?.let { findWindowByTag(it) }?.let {
+            val params = it.root.layoutParams as WindowManager.LayoutParams
+            params.flags = params.flags or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+            windowManager.updateViewLayout(it.root, params)
+        }
     }
 
     inner class MoveOnTouchListener(private val isMovingCallback: (isMoving: Boolean) -> Unit) :
@@ -190,38 +216,52 @@ class OverlayService : Service() {
     class WindowAction(val window: OverlayWindow) {
         fun show() {
             if (window.isCreated.not()) {
-                window.onCreate()
+                GlobalScope.launch(Dispatchers.Main) { window.onCreate() }
                 window.context.startService(
-                    Intent(
-                        window.context,
-                        OverlayService::class.java
-                    ).apply {
+                    Intent(window.context, OverlayService::class.java).apply {
                         action = ACTION_SHOW_WINDOW
                         putExtra(EXTRA_TAG, window.tag)
                     })
             }
             if (window.isShowing.not()) {
-                window.onShow()
+                GlobalScope.launch(Dispatchers.Main) { window.onShow() }
             }
         }
 
         fun hide() {
             if (window.isShowing) {
-                window.onHide()
+                GlobalScope.launch(Dispatchers.Main) { window.onHide() }
             }
         }
 
         fun destroy() {
             if (window.isDestroyed.not()) {
                 window.context.startService(
-                    Intent(
-                        window.context,
-                        OverlayService::class.java
-                    ).apply {
+                    Intent(window.context, OverlayService::class.java).apply {
                         action = ACTION_DESTROY_WINDOW
                         putExtra(EXTRA_TAG, window.tag)
                     })
-                window.onDestroy()
+                GlobalScope.launch(Dispatchers.Main) { window.onDestroy() }
+            }
+        }
+
+        fun getFocus() {
+            if (window.isDestroyed.not()) {
+                window.context.startService(
+                    Intent(window.context, OverlayService::class.java).apply {
+                        action = ACTION_GET_FOCUS
+                        putExtra(EXTRA_TAG, window.tag)
+                    })
+            }
+        }
+
+        fun releaseFocus() {
+            if (window.isDestroyed.not()) {
+                window.context.startService(
+                    Intent(window.context, OverlayService::class.java).apply {
+                        action = ACTION_RELEASE_FOCUS
+                        putExtra(EXTRA_TAG, window.tag)
+                    })
             }
         }
     }

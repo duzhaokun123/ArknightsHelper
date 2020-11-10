@@ -3,4 +3,12 @@
     <string name="showing_overlay">showing overlay</string>
     <string name="permission_request">permission request</string>
     <string name="msg_overlay_request">overlay request</string>
+    <string name="operation_loop">operation loop</string>
+    <string name="start">start</string>
+    <string name="until">until</string>
+    <string name="times">times</string>
+    <string name="get_focus">get focus</string>
+    <string name="close">close</string>
+    <string name="stop">stop</string>
+    <string name="quit_when_finish">quit when finish</string>
 </resources>

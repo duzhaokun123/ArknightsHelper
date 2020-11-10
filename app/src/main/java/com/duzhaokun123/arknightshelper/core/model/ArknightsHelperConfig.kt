@@ -7,6 +7,7 @@ data class ArknightsHelperConfig(
     val behavior: Behavior = Behavior()
 ) {
     data class Behavior(
-        val skipMistakenDelegation: Boolean = true
+        val skipMistakenDelegation: Boolean = true,
+        val allowMistakenDelegation: Boolean = false
     )
 }

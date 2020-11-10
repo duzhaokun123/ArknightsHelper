@@ -38,7 +38,7 @@ class MDLogger private constructor(private val path: String, name: String) : Log
         val name = "$title${Random.nextInt()}.png"
         val file = File(path, name).path
         Imgcodecs.imwrite(file, img)
-        writeFile("$func: ![$title](./$name)\n\n", level)
+        writeFile("$tag: $func: ![$title](./$name)\n\n", level)
     }
 
     override fun logH1(tag: String, func: String, msg: String, level: Int) {
@@ -54,7 +54,7 @@ class MDLogger private constructor(private val path: String, name: String) : Log
     }
 
     override fun logText(tag: String, func: String, msg: String, level: Int) {
-        writeFile("$msg\n\n", level)
+        writeFile("$tag: $func: $msg\n\n", level)
     }
 
     override fun logDivider(tag: String, func: String, level: Int) {

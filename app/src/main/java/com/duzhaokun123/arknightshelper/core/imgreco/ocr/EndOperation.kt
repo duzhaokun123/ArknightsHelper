@@ -3,7 +3,6 @@ package com.duzhaokun123.arknightshelper.core.imgreco.ocr
 import android.util.Log
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.TesseractOCR.fixStageName
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util.crop
-import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util.sum
 import com.duzhaokun123.arknightshelper.core.logger.Logger
 import com.duzhaokun123.arknightshelper.core.model.EndOperationRecognizeInfo
 import org.opencv.core.Mat
@@ -18,12 +17,7 @@ object EndOperation {
         logger?.logH2(TAG, func)
 
         val t0 = System.currentTimeMillis()
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(img.size()).let {
-            vw = it.first
-            vh = it.second
-        }
+        val (vw, vh) = Util.getVwvh(img.size())
 
         val lower = img.crop(
             Rect(
@@ -49,7 +43,6 @@ object EndOperation {
                 Point(53.241 * vh, 16.944 * vh)
             )
         )
-        logger?.logImg(TAG, stars, func, "stars")
         val starsStatus = tellStars(stars, logger)
         logger?.logText(TAG, func, "starsStatus = $starsStatus")
 
@@ -74,12 +67,7 @@ object EndOperation {
     }
 
     fun checkLevelUpPopup(img: Mat): Boolean {
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(img.size()).let {
-            vw = it.first
-            vh = it.second
-        }
+        val (vw, vh) = Util.getVwvh(img.size())
         val lui = img.crop(
             Rect(
                 Point(50 * vw - 48.796 * vh, 47.685 * vh),
@@ -91,29 +79,18 @@ object EndOperation {
     }
 
     fun checkEndOperation(img: Mat): Boolean {
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(img.size()).let {
-            vw = it.first
-            vh = it.second
-        }
+        val (_, vh) = Util.getVwvh(img.size())
         val template = Resources.loadImage("end_operation/friendship.png")!!
         val operationEndImg = img.crop(117.083 * vh, 64.306 * vh, 121.528 * vh, 69.583 * vh)
-        val mse = Imgops.compareMse(Imgops.uniformSize(template, operationEndImg))
-        return mse.sum() < 86 && mse.sum() > 46
+        return Imgops.compareCcoeff(Imgops.uniformSize(template, operationEndImg)) > 0.8
     }
 
     fun checkEndOperationAlt(img: Mat): Boolean {
-        val vw: Double
-        val vh: Double
-        Util.getVwvh(img.size()).let {
-            vw = it.first
-            vh = it.second
-        }
+        val (_, vh) = Util.getVwvh(img.size())
         val template = Resources.loadImage("end_operation/end.png")!!
         val operationEndImg = img.crop(4.722 * vh, 80.278 * vh, 56.389 * vh, 93.889 * vh)
-        val mse = Imgops.compareMse(Imgops.uniformSize(template, operationEndImg))
-        return mse.sum() < 26 && mse.sum() > 10
+
+        return Imgops.compareCcoeff(Imgops.uniformSize(template, operationEndImg)) > 0.7
     }
 
     /**

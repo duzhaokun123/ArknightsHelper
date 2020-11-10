@@ -22,6 +22,9 @@ open class OverlayWindow(val context: Context) {
     var isShowing = false
         private set
 
+    var hasFocus = false
+        private set
+
     open fun onCreate() {
         isDestroyed = false
         isCreated = true
@@ -55,5 +58,15 @@ open class OverlayWindow(val context: Context) {
 
     fun selfDestroy() {
         toAction().destroy()
+    }
+
+    fun getFocus() {
+        toAction().getFocus()
+        hasFocus = true
+    }
+
+    fun releaseFocus() {
+        toAction().releaseFocus()
+        hasFocus = false
     }
 }

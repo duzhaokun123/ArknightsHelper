@@ -5,4 +5,5 @@ object Flags {
     const val SMALL_WAIT = 3000L
     const val MEDIUM_WAIT = 5000L
     const val BATTLE_NONE_DETECT_TIME = 90000L
+    const val BATTLE_FINISH_DETECT = 12000L
 }

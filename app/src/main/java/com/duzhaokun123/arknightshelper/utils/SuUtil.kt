@@ -19,7 +19,7 @@ object SuUtil {
         return re
     }
 
-    fun inputTap(x: Int, y: Int) {
+    fun inputTap(x: Double, y: Double) {
         Shell.su("input tap $x $y").exec()
     }
 
