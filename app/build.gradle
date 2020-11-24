@@ -1,8 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
-    id 'org.jetbrains.kotlin.kapt'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -83,9 +82,9 @@ dependencies {
     //tess-two
     implementation 'com.rmtheis:tess-two:9.0.0'
 
-    //kotlin-reflect
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+//    //kotlin-reflect
+//    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    //kotlinx-coroutines
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.0"
+   //kotlinx-coroutines
+   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1"
 }
