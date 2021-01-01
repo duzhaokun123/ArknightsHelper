@@ -3,10 +3,11 @@ package com.duzhaokun123.arknightshelper.core
 import com.duzhaokun123.arknightshelper.utils.SuUtil
 import org.opencv.core.Size
 
-class SuUIInteractor : UIInteractor {
-    override val screenSize: Size
-        get() = SuUtil.getScreenSize() ?: super.screenSize
-
+object SuUIInteractor : UIInteractor {
+    override val screenSize by lazy {
+        SuUtil.getScreenSize() ?: super.screenSize
+    }
+    
     override val canWork: Boolean
         get() = SuUtil.check()
 

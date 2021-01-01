@@ -2,6 +2,7 @@ package com.duzhaokun123.arknightshelper.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.widget.Toast
 import com.duzhaokun123.arknightshelper.R
 import com.duzhaokun123.arknightshelper.bases.BaseActivity
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.BeforeOperation
@@ -16,6 +17,10 @@ import com.duzhaokun123.arknightshelper.core.model.CommonCheckDialogInfo
 import com.duzhaokun123.arknightshelper.databinding.ActivityMainBinding
 import com.duzhaokun123.arknightshelper.utils.TipUtil
 import com.duzhaokun123.overlaywindow.OverlayService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
     companion object {

@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Rect
+import org.opencv.core.Size
 import kotlin.random.Random
 
 class ArknightsHelper(
@@ -36,11 +37,12 @@ class ArknightsHelper(
         MultiLogger(MDLogger(logName), callbackLogger, AndroidLogger())
     }
 
-    private val screenSize by lazy {
-        uiInteractor.screenSize.also {
-            logger.debug(TAG, "screenSize", "screenSize: $it")
+    private val screenSize: Size
+        get() {
+            val size = uiInteractor.screenSize
+            logger.debug(TAG, "screenSize", "screenSize: $size")
+            return size
         }
-    }
 
     private val helperState by lazy { ArknightsHelperState() }
 

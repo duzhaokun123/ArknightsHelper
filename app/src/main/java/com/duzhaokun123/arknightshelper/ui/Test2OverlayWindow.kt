@@ -18,7 +18,7 @@ import com.duzhaokun123.overlaywindow.OverlayService.Companion.toAction
 class Test2OverlayWindow(context: Context) : BaseOverlayWindow<OverlayTest2Binding>(context) {
     private val arknightsHelper by lazy {
         ArknightsHelper(
-            SuUIInteractor(),
+            SuUIInteractor,
             CallbackLogger(baseBind.scNoChild.isChecked) { tag, func, msg, level ->
                 if (level != Log.DEBUG || baseBind.scDebug.isChecked)
                     Application.runOnUiThread {

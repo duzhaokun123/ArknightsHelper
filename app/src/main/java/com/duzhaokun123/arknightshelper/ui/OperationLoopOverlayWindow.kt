@@ -21,7 +21,7 @@ class OperationLoopOverlayWindow(context: Context) :
     BaseOverlayWindow<OverlayOperationLoopBinding>(context) {
     private val helper by lazy {
         ArknightsHelper(
-            SuUIInteractor(),
+            SuUIInteractor,
             CallbackLogger(noChild = true, noH = true) { tag, func, msg, level ->
                 if (level != Log.DEBUG) {
                     Application.runOnUiThread {
