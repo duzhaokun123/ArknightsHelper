@@ -7,3 +7,11 @@ fun String?.notEmptyOrNull(): String? {
         null
     }
 }
+
+operator fun String.times(times: Int): String {
+    val builder = StringBuilder()
+    (0..times).forEach { _ ->
+        builder.append(this)
+    }
+    return builder.toString()
+}

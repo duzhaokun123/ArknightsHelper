@@ -16,6 +16,7 @@ import com.duzhaokun123.arknightshelper.core.logger.MultiLogger
 import com.duzhaokun123.arknightshelper.core.model.CommonCheckDialogInfo
 import com.duzhaokun123.arknightshelper.databinding.ActivityMainBinding
 import com.duzhaokun123.arknightshelper.utils.TipUtil
+import com.duzhaokun123.arknightshelper.utils.times
 import com.duzhaokun123.overlaywindow.OverlayService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -31,9 +32,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     private val logger by lazy {
-        MultiLogger(CallbackLogger { tag, func, msg, level ->
+        MultiLogger(CallbackLogger { tag, func, msg, level, depth ->
             runOnUiThread {
-                baseBind.tvCallback.append("${Util.getLogLevelString(level)}/$tag: $func: $msg\n")
+                baseBind.tvCallback.append("${"|" * depth}${Util.getLogLevelString(level)}/$tag: $func: $msg\n")
             }
         }, MDLogger("Test"), AndroidLogger())
     }

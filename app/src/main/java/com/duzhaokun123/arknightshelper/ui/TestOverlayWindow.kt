@@ -11,15 +11,16 @@ import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util
 import com.duzhaokun123.arknightshelper.core.logger.CallbackLogger
 import com.duzhaokun123.arknightshelper.core.model.ArknightsHelperConfig
 import com.duzhaokun123.arknightshelper.databinding.OverlayTestBinding
+import com.duzhaokun123.arknightshelper.utils.times
 import com.duzhaokun123.overlaywindow.OverlayService.Companion.toAction
 
 class TestOverlayWindow(context: Context) : BaseOverlayWindow<OverlayTestBinding>(context) {
     private val arknightsHelper by lazy {
         ArknightsHelper(
             SuUIInteractor,
-            CallbackLogger { tag, func, msg, level ->
+            CallbackLogger { tag, func, msg, level, depth ->
                 Application.runOnUiThread {
-                    baseBind.tvCallback.append("${Util.getLogLevelString(level)}/$tag: $func: $msg\n")
+                    baseBind.tvCallback.append("${"|" * depth}${Util.getLogLevelString(level)}/$tag: $func: $msg\n")
                 }
             }, ArknightsHelperConfig(), this.toAction(), "TestOverlayWindow"
         )

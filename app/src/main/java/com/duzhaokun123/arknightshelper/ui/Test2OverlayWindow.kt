@@ -12,6 +12,7 @@ import com.duzhaokun123.arknightshelper.core.arknights.ArknightsHelper
 import com.duzhaokun123.arknightshelper.core.logger.CallbackLogger
 import com.duzhaokun123.arknightshelper.core.model.ArknightsHelperConfig
 import com.duzhaokun123.arknightshelper.databinding.OverlayTest2Binding
+import com.duzhaokun123.arknightshelper.utils.times
 import com.duzhaokun123.logtextview.LogTextView
 import com.duzhaokun123.overlaywindow.OverlayService.Companion.toAction
 
@@ -19,9 +20,10 @@ class Test2OverlayWindow(context: Context) : BaseOverlayWindow<OverlayTest2Bindi
     private val arknightsHelper by lazy {
         ArknightsHelper(
             SuUIInteractor,
-            CallbackLogger(baseBind.scNoChild.isChecked) { tag, func, msg, level ->
+            CallbackLogger(baseBind.scNoChild.isChecked) { tag, func, msg, level, depth ->
                 if (level != Log.DEBUG || baseBind.scDebug.isChecked)
                     Application.runOnUiThread {
+                        baseBind.tvCallback.append("|" * depth)
                         baseBind.tvCallback.appendLog(
                             LogTextView.parserAndroidLogLevel(level),
                             tag,

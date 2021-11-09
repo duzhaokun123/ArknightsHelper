@@ -13,6 +13,7 @@ import com.duzhaokun123.arknightshelper.core.logger.CallbackLogger
 import com.duzhaokun123.arknightshelper.core.model.ArknightsHelperConfig
 import com.duzhaokun123.arknightshelper.databinding.OverlayOperationLoopBinding
 import com.duzhaokun123.arknightshelper.utils.ViewUtil.scrollToBottom
+import com.duzhaokun123.arknightshelper.utils.times
 import com.duzhaokun123.logtextview.LogTextView
 import com.duzhaokun123.overlaywindow.OverlayService.Companion.toAction
 import kotlinx.coroutines.delay
@@ -22,9 +23,10 @@ class OperationLoopOverlayWindow(context: Context) :
     private val helper by lazy {
         ArknightsHelper(
             SuUIInteractor,
-            CallbackLogger(noChild = true, noH = true) { tag, func, msg, level ->
+            CallbackLogger(noChild = true, noH = true) { tag, func, msg, level, depth ->
                 if (level != Log.DEBUG) {
                     Application.runOnUiThread {
+                        baseBind.ltv.append("|" * depth)
                         baseBind.ltv.appendLog(
                             LogTextView.parserAndroidLogLevel(level), tag, func, msg
                         )

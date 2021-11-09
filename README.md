@@ -1,7 +1,9 @@
-# Arknights Helper
+# Arknights Helper (RIP)
 [ArknightsAutoHelper](https://github.com/ninthDevilHAUNSTER/ArknightsAutoHelper)的 Android 移植
 
-还在早期
+~~还在早期~~ 
+
+# 弃坑了, 不想肝了
 
 ## 现在有什么
 - 通过 Root 交互
@@ -30,7 +32,8 @@
 - 分离`*.traineddata`
 
 ## 从源代码编译注意
-- 下载 [OpenCV 4.5.0 Android SDK](https://sourceforge.net/projects/opencvlibrary/files/4.5.0/opencv-4.5.0-android-sdk.zip/download) 解压至`$ProjectRoot/third_party`
+- 下载 OpenCV 4.x Android SDK 解压至`$ProjectRoot/third_party`
+    - 建议[OpenCV 4.5.1 Android SDK](https://sourceforge.net/projects/opencvlibrary/files/4.5.1/opencv-4.5.1-android-sdk.zip/download)
 
 ## Thanks
 
