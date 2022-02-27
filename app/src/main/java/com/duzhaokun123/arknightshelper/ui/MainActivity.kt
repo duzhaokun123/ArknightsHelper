@@ -5,10 +5,7 @@ import android.content.Intent
 import android.widget.Toast
 import com.duzhaokun123.arknightshelper.R
 import com.duzhaokun123.arknightshelper.bases.BaseActivity
-import com.duzhaokun123.arknightshelper.core.imgreco.ocr.BeforeOperation
-import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Common
-import com.duzhaokun123.arknightshelper.core.imgreco.ocr.EndOperation
-import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util
+import com.duzhaokun123.arknightshelper.core.imgreco.ocr.*
 import com.duzhaokun123.arknightshelper.core.logger.AndroidLogger
 import com.duzhaokun123.arknightshelper.core.logger.CallbackLogger
 import com.duzhaokun123.arknightshelper.core.logger.MDLogger
@@ -29,6 +26,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         const val REQUEST_OPEN_FILE_BEFORE_OPERATION_CCTR = 2
         const val REQUEST_OPEN_FILE_END_OPERATION_RECOGNIZE = 3
         const val REQUEST_OPEN_FILE_DIALOG = 4
+        const val REQUEST_OPEN_FILE_OCR = 5
     }
 
     private val logger by lazy {
@@ -73,6 +71,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         baseBind.fileDialog.setOnClickListener {
             requestImgFor(REQUEST_OPEN_FILE_DIALOG)
         }
+        baseBind.fileOcr.setOnClickListener {
+            requestImgFor(REQUEST_OPEN_FILE_OCR)
+        }
     }
 
     override fun initData() {
@@ -102,6 +103,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                                                 "ok: ${Common.getDialogOkButtonRect(it)}"
                                             } else ""
                                 }
+                                REQUEST_OPEN_FILE_OCR ->
+                                    PaddleOCR.process(it)
                                 else -> "bad code $requestCode"
                             }
                         runOnUiThread {

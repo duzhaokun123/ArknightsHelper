@@ -51,11 +51,22 @@
             android:layout_height="wrap_content"
             android:text="file end Operation recognize" />
 
-        <Button
-            android:id="@+id/file_dialog"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="file dialog" />
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/file_dialog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="file dialog" />
+
+            <Button
+                android:id="@+id/file_ocr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ocr" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"

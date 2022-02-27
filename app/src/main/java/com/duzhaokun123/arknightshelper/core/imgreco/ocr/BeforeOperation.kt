@@ -1,13 +1,12 @@
 package com.duzhaokun123.arknightshelper.core.imgreco.ocr
 
 import androidx.core.text.isDigitsOnly
-import com.duzhaokun123.arknightshelper.core.imgreco.ocr.TesseractOCR.fixApString
-import com.duzhaokun123.arknightshelper.core.imgreco.ocr.TesseractOCR.fixStageName
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util.crop
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util.sum
 import com.duzhaokun123.arknightshelper.core.logger.Logger
 import com.duzhaokun123.arknightshelper.core.model.BeforeOperationRecognizeInfo
 import com.duzhaokun123.arknightshelper.utils.notEmptyOrNull
+import io.github.duzhaokun123.utils.surroundWith
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Rect
@@ -49,7 +48,7 @@ object BeforeOperation {
             )
         )
         logger?.logImg(TAG, apimg, func, "apimg")
-        val apText = (TesseractOCR.process(apimg) ?: return null).fixApString(logger)
+        val apText = (PaddleOCR.process(apimg.surroundWith(20)) ?: return null)
         logger?.logText(TAG, func, " apText: $apText")
         logger?.logDivider(TAG, func)
 
@@ -60,7 +59,7 @@ object BeforeOperation {
             )
         )
         logger?.logImg(TAG, opidimg, func, "opidimg")
-        val opidtext = (TesseractOCR.process(opidimg) ?: return null).fixStageName(logger)
+        val opidtext = (PaddleOCR.process(opidimg.surroundWith(20)) ?: return null)
         logger?.logText(TAG, func, " opidtext: $opidtext")
         logger?.logDivider(TAG, func)
 
@@ -86,7 +85,7 @@ object BeforeOperation {
         )
         logger?.logImg(TAG, consumeimg, "recognize", "consumeimg")
         val rawConsumetext =
-            (TesseractOCR.process(consumeimg).notEmptyOrNull() ?: return null).fixApString(logger)
+            (PaddleOCR.process(consumeimg.surroundWith(20)).notEmptyOrNull() ?: return null)
         logger?.logText(TAG, func, " rawConsumetext: $rawConsumetext")
         val consumetext =
             if (rawConsumetext.startsWith("-")) {

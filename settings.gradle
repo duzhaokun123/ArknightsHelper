@@ -2,5 +2,8 @@ include ':logtextview'
 include ':overlaywindow'
 include ':opencv'
 include ':app'
-project(':opencv').projectDir = new File(rootDir, 'third_party/OpenCV-android-sdk/sdk/')
+include ':paddleocr'
+project(':opencv').projectDir = file('third_party/OpenCV-android-sdk/sdk/')
+project(':paddleocr').projectDir = file('third_party/paddleocr')
 rootProject.name = "ArknightsHelper"
+include ':utils'

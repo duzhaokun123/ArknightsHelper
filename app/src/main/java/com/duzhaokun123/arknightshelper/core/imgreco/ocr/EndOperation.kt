@@ -1,10 +1,10 @@
 package com.duzhaokun123.arknightshelper.core.imgreco.ocr
 
 import android.util.Log
-import com.duzhaokun123.arknightshelper.core.imgreco.ocr.TesseractOCR.fixStageName
 import com.duzhaokun123.arknightshelper.core.imgreco.ocr.Util.crop
 import com.duzhaokun123.arknightshelper.core.logger.Logger
 import com.duzhaokun123.arknightshelper.core.model.EndOperationRecognizeInfo
+import io.github.duzhaokun123.utils.surroundWith
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Rect
@@ -34,7 +34,7 @@ object EndOperation {
             )
         )
         logger?.logImg(TAG, operationId, func, "operationId")
-        val operationIdStr = (TesseractOCR.process(operationId) ?: return null).fixStageName(logger)
+        val operationIdStr = (PaddleOCR.process(operationId.surroundWith(20)) ?: return null)
         logger?.logText(TAG, func, "operationIdStr: $operationIdStr")
 
         val stars = lower.crop(
@@ -74,7 +74,7 @@ object EndOperation {
                 Point(50 * vw - 23.148 * vh, 56.019 * vh)
             )
         )
-        val lut = TesseractOCR.process(lui) ?: return false
+        val lut = PaddleOCR.process(lui) ?: return false
         return "提升" in lut
     }
 

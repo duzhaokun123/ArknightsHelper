@@ -89,7 +89,7 @@ object Common {
         val (type, y) = checkDialog(img) ?: return null
         val (vw, vh) = Util.getVwvh(img.size())
         val content = img.crop(0.0, 22.222 * vh, 100.000 * vw, 64.167 * vh)
-        return CommonRecognizeDialogInfo(type, y, TesseractOCR.process(content))
+        return CommonRecognizeDialogInfo(type, y, PaddleOCR.process(content))
     }
 
     fun checkDialog(img: Mat): CommonCheckDialogInfo? {

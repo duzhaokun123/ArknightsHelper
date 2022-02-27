@@ -6,8 +6,11 @@ import com.duzhaokun123.arknightshelper.utils.Handler
 import com.duzhaokun123.arknightshelper.utils.NotificationUtil
 import com.duzhaokun123.arknightshelper.utils.Settings
 import com.duzhaokun123.overlaywindow.OverlayService
+import com.google.android.material.color.DynamicColors
+import com.google.android.material.color.MaterialColors
 //import com.google.gson.Gson
 import com.topjohnwu.superuser.Shell
+import io.github.duzhaokun123.utils.UtilsLibLoader
 import kotlinx.coroutines.*
 import org.opencv.android.OpenCVLoader
 
@@ -31,6 +34,7 @@ class Application : android.app.Application(), Handler.IHandlerMessageCallback {
         super.onCreate()
         Settings.init(this)
         AppCompatDelegate.setDefaultNightMode(Settings.Layout.uiMode)
+        DynamicColors.applyToActivitiesIfAvailable(this)
 
         Shell.enableVerboseLogging = BuildConfig.DEBUG
         Shell.setDefaultBuilder(
@@ -51,6 +55,7 @@ class Application : android.app.Application(), Handler.IHandlerMessageCallback {
         OverlayService.init(overlayNotificationId, overlayNotification)
 
         OpenCVLoader.initDebug()
+        UtilsLibLoader.load()
     }
 
     init {

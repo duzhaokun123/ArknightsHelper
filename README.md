@@ -1,9 +1,7 @@
 # Arknights Helper (RIP)
 [ArknightsAutoHelper](https://github.com/ninthDevilHAUNSTER/ArknightsAutoHelper)的 Android 移植
 
-~~还在早期~~ 
-
-# 弃坑了, 不想肝了
+还在早期
 
 ## 现在有什么
 - 通过 Root 交互
@@ -27,9 +25,9 @@
   - 游戏异型屏适配值为 0
   - 已 Root 且授权
   - 给予悬浮窗权限
+- paddleocr 部分源码缺失
 
 ## TODO
-- 分离`*.traineddata`
 
 ## 从源代码编译注意
 - 下载 OpenCV 4.x Android SDK 解压至`$ProjectRoot/third_party`
@@ -47,10 +45,8 @@
 
 [OpenCV](https://opencv.org/)
 
-[Tesseract OCR](https://tesseract-ocr.github.io/)
+[Paddle(PaddleLite, PaddleOCR)](https://paddlepaddle.org/)
 
 [libsu](https://github.com/topjohnwu/libsu)
 
 [preferencex-android](https://github.com/takisoft/preferencex-android)
-
-[tess-two](https://github.com/alexcohn/tess-two)
